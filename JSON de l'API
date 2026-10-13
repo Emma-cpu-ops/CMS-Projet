@@ -1,0 +1,151 @@
+-- la collection categories
+{
+    "data": [
+        {
+            "id": 1,
+            "documentId": "mllfhjz5pf7kc1neomjrf0qw",
+            "name": "Électronique",
+            "slug": "electronique",
+            "description": null,
+            "createdAt": "2026-10-12T15:32:39.694Z",
+            "updatedAt": "2026-10-12T15:32:59.884Z",
+            "publishedAt": "2026-10-12T15:32:59.879Z"
+        },
+        {
+            "id": 2,
+            "documentId": "vaulfku69tfsxwwas0edqoxw",
+            "name": "Chaussures",
+            "slug": "chaussures",
+            "description": null,
+            "createdAt": "2026-10-12T15:33:17.743Z",
+            "updatedAt": "2026-10-12T15:33:17.743Z",
+            "publishedAt": "2026-10-12T15:33:17.736Z"
+        },
+        {
+            "id": 3,
+            "documentId": "joz4fk31ye4rmy9ycjitc5gz",
+            "name": "Vêtements",
+            "slug": "vetements",
+            "description": null,
+            "createdAt": "2026-10-12T15:33:31.407Z",
+            "updatedAt": "2026-10-12T15:33:31.407Z",
+            "publishedAt": "2026-10-12T15:33:31.403Z"
+        },
+        {
+            "id": 4,
+            "documentId": "gcmst20oufwtzjerilou3qpm",
+            "name": "accessoires",
+            "slug": "accessoires",
+            "description": null,
+            "createdAt": "2026-10-12T15:53:36.067Z",
+            "updatedAt": "2026-10-12T15:53:36.067Z",
+            "publishedAt": "2026-10-12T15:53:36.062Z"
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "page": 1,
+            "pageSize": 25,
+            "pageCount": 1,
+            "total": 4
+        }
+    }
+}
+
+-- la collection articles
+{
+    "data": [
+        {
+            "id": 9,
+            "documentId": "juhsjysks0wiqtpj1j8dhvjp",
+            "title": " T-shirt Minimaliste Blanc",
+            "description": "Un t-shirt en coton biologique de haute qualité, doté d'une coupe décontractée moderne et d'une petite poche discrète sur la poitrine. Parfait pour un style épuré au quotidien.",
+            "slug": "t-shirt-minimaliste-blanc",
+            "createdAt": "2026-10-12T15:41:00.901Z",
+            "updatedAt": "2026-10-12T15:56:54.971Z",
+            "publishedAt": "2026-10-12T15:56:54.988Z",
+            "Price": 29.99
+        },
+        {
+            "id": 10,
+            "documentId": "nl39e9eid76caknihay8tz3m",
+            "title": "Machine à Café Expresso Italienne",
+            "description": "Préparez d'authentiques expressos et cappuccinos crémeux à la maison. Équipée d'une pompe à haute pression de 15 bars et d'une buse vapeur en acier inoxydable pour faire mousser le lait à la perfection.",
+            "slug": "machine-a-cafe-expresso-italienne",
+            "createdAt": "2026-10-12T15:56:40.620Z",
+            "updatedAt": "2026-10-12T15:57:04.993Z",
+            "publishedAt": "2026-10-12T15:57:05.014Z",
+            "Price": 149
+        },
+        {
+            "id": 11,
+            "documentId": "e69cjredfjnq8jt7sd2gclqf",
+            "title": "Montre Connectée Élégante",
+            "description": "Une montre intelligente dotée d'un écran AMOLED haute définition. Elle suit votre activité physique, votre sommeil et vos notifications au quotidien avec une autonomie exceptionnelle de 7 jours.",
+            "slug": "montre-connectee-elegante",
+            "createdAt": "2026-10-12T15:52:52.236Z",
+            "updatedAt": "2026-10-12T15:57:11.609Z",
+            "publishedAt": "2026-10-12T15:57:11.625Z",
+            "Price": 199.9
+        },
+        {
+            "id": 12,
+            "documentId": "qm3trjv08sfosz0kxm9cujpe",
+            "title": "Pack Équipement Tech & Bureau",
+            "description": "L'ensemble ultime pour votre espace de travail ou de divertissement. Comprend un ordinateur portable haute performance, un casque audio à réduction de bruit active, une manette sans fil et une caméra haut de gamme.",
+            "slug": "pack-equipement-tech-and-bureau",
+            "createdAt": "2026-10-12T15:50:13.789Z",
+            "updatedAt": "2026-10-12T15:57:21.799Z",
+            "publishedAt": "2026-10-12T15:57:21.814Z",
+            "Price": 899
+        },
+        {
+            "id": 13,
+            "documentId": "bgk8f7231pfxhtmrymrkxycn",
+            "title": "Sac à Dos Urbain Imperméable",
+            "description": "Le compagnon idéal pour le quotidien ou les voyages. Conçu en toile imperméable durable, il comprend un compartiment matelassé pour ordinateur 15 pouces et de nombreuses poches de rangement dissimulées.",
+            "slug": "sac-a-dos-urbain-impermeable",
+            "createdAt": "2026-10-12T15:55:17.892Z",
+            "updatedAt": "2026-10-12T15:57:27.736Z",
+            "publishedAt": "2026-10-12T15:57:27.749Z",
+            "Price": 65
+        },
+        {
+            "id": 14,
+            "documentId": "iqycd32z5uedkls44lazqn4z",
+            "title": "Sneakers de Course Modernes",
+            "description": "Chaussures de sport ultra-légères avec semelle amortissante à haute technologie. Design blanc et gris épuré avec des accents orange dynamiques pour le running ou le streetwear.",
+            "slug": "sneakers-de-course-modernes",
+            "createdAt": "2026-10-12T15:48:10.053Z",
+            "updatedAt": "2026-10-12T15:57:35.233Z",
+            "publishedAt": "2026-10-12T15:57:35.246Z",
+            "Price": 120
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "page": 1,
+            "pageSize": 25,
+            "pageCount": 1,
+            "total": 6
+        }
+    }
+}
+
+-- la collection global
+{
+    "data": {
+        "id": 1,
+        "documentId": "zbhgea1m1s5rrirs935wonwt",
+        "siteName": "Mon Échoppe Tech & Mode",
+        "siteDescription": "Onlineshop — La boutique en ligne nouvelle génération combinant le meilleur de la technologie, de la mode urbaine et des accessoires du quotidien.",
+        "createdAt": "2026-10-12T16:02:35.119Z",
+        "updatedAt": "2026-10-12T16:02:35.119Z",
+        "publishedAt": "2026-10-12T16:02:35.115Z"
+    },
+    "meta": {}
+}
+
+-- la collection cards et user
+voir images
+
