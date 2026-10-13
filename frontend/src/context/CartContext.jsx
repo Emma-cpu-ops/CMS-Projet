@@ -22,53 +22,73 @@ export function CartProvider({ children }) {
     localStorage.setItem(CART_KEY, JSON.stringify(items))
   }, [items])
 
-  const addItem = async (article) => {
+  const addItem = async (article, quantity = 1) => {
+    if (!article) return
+    const addCount = Number(quantity) > 0 ? Number(quantity) : 1
+    const slug = article.slug
+    const title = (article.title || 'Produit').trim()
+    const price = Number(article.Price ?? 0)
+
     setItems((current) => {
-      const existing = current.find((line) => line.slug === article.slug)
+      const existing = current.find((line) => line.slug === slug)
       if (existing) {
         return current.map((line) =>
-          line.slug === article.slug ? { ...line, qty: line.qty + 1 } : line,
+          line.slug === slug ? { ...line, qty: line.qty + addCount } : line,
         )
       }
       return [
         ...current,
         {
-          slug: article.slug,
+          slug,
           documentId: article.documentId,
-          title: article.title.trim(),
-          Price: article.Price,
-          qty: 1,
+          title,
+          Price: price,
+          cover: article.cover,
+          qty: addCount,
         },
       ]
     })
 
     if (hasRemoteApi && user) {
       try {
-        await createCartLine({
-          titre: article.title.trim(),
-          Desc: article.description,
-          slug: `${article.slug}-${Date.now()}`,
-          article: article.documentId,
+        const created = await createCartLine({
+          titre: title,
+          Desc: article.description || '',
+          slug: `${slug}-${Date.now()}`,
+          article: article.documentId || null,
         })
-      } catch {
-        setNotice('Ajouté en local. L’écriture Strapi a échoué (permissions ou nom d’API).')
+        if (created?.documentId) {
+          setItems((current) =>
+            current.map((line) =>
+              line.slug === slug && !line.remoteId
+                ? { ...line, remoteId: created.documentId }
+                : line,
+            ),
+          )
+        }
+      } catch (err) {
+        console.warn('Sync cart line to Strapi:', err)
       }
     }
   }
 
-  const removeItem = async (slug, documentId) => {
+  const removeItem = async (slug, documentId, remoteId) => {
     setItems((current) => current.filter((line) => line.slug !== slug))
-    if (hasRemoteApi && documentId) {
+    const idToDelete = remoteId || documentId
+    if (hasRemoteApi && idToDelete) {
       try {
-        await deleteCartLine(documentId)
-      } catch {
-        setNotice('Ligne retirée en local. La suppression Strapi a échoué.')
+        await deleteCartLine(idToDelete)
+      } catch (err) {
+        console.warn('Suppression Strapi:', err)
       }
     }
   }
 
   const setQty = (slug, qty) => {
-    if (qty < 1) return
+    if (qty < 1) {
+      removeItem(slug)
+      return
+    }
     setItems((current) =>
       current.map((line) => (line.slug === slug ? { ...line, qty } : line)),
     )
@@ -76,7 +96,7 @@ export function CartProvider({ children }) {
 
   const clear = () => setItems([])
 
-  const total = items.reduce((sum, line) => sum + Number(line.Price) * line.qty, 0)
+  const total = items.reduce((sum, line) => sum + Number(line.Price || 0) * line.qty, 0)
   const count = items.reduce((sum, line) => sum + line.qty, 0)
 
   const value = useMemo(

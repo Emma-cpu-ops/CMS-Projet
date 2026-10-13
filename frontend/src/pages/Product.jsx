@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { fetchArticleBySlug } from '../api/strapi'
-import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { articleImage, formatPrice } from '../utils/format'
 
 export default function Product() {
   const { slug } = useParams()
-  const navigate = useNavigate()
-  const { user } = useAuth()
   const { addItem } = useCart()
   const [article, setArticle] = useState(undefined)
+  const [qty, setQty] = useState(1)
+  const [addedNotice, setAddedNotice] = useState(false)
 
   useEffect(() => {
     fetchArticleBySlug(slug).then(setArticle)
@@ -28,7 +27,7 @@ export default function Product() {
     return (
       <main className="section">
         <p>Article introuvable.</p>
-        <Link to="/catalogue">Retour au catalogue</Link>
+        <Link to="/catalogue" className="btn ghost">Retour au catalogue</Link>
       </main>
     )
   }
@@ -37,28 +36,82 @@ export default function Product() {
   const title = article?.title?.trim() || 'Produit'
   const productTone = (article?.slug || 'produit').split('-')[0] || 't'
 
-  const add = async () => {
-    if (!user) {
-      navigate('/connexion', { state: { from: `/produit/${slug}` } })
-      return
-    }
-    await addItem(article)
-    navigate('/panier')
+  const handleAdd = async () => {
+    await addItem(article, qty)
+    setAddedNotice(true)
   }
 
   return (
     <main className="product">
       <div className={`product-media ${image ? '' : `placeholder tone-${productTone}`}`}>
-        {image ? <img src={image} alt={title} /> : null}
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+              if (e.currentTarget.parentElement) {
+                e.currentTarget.parentElement.classList.add(
+                  'placeholder',
+                  `tone-${productTone}`,
+                )
+              }
+            }}
+          />
+        ) : null}
       </div>
       <div>
         <p className="eyebrow">Fiche produit</p>
         <h1>{title}</h1>
         <p className="lede">{article.description || 'Découvrez ce produit sélectionné pour vous.'}</p>
         <p className="price">{formatPrice(article.Price)}</p>
-        <button type="button" className="btn" onClick={add}>
-          Ajouter au panier
-        </button>
+
+        <div className="product-actions">
+          <div className="qty-selector">
+            <label htmlFor="product-qty">Quantité :</label>
+            <div className="qty">
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                aria-label="Diminuer la quantité"
+              >
+                −
+              </button>
+              <input
+                id="product-qty"
+                type="number"
+                min="1"
+                value={qty}
+                onChange={(e) => setQty(Math.max(1, parseInt(e.target.value, 10) || 1))}
+              />
+              <button
+                type="button"
+                onClick={() => setQty((q) => q + 1)}
+                aria-label="Augmenter la quantité"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <button type="button" className="btn" onClick={handleAdd}>
+            Ajouter au panier
+          </button>
+        </div>
+
+        {addedNotice ? (
+          <div className="product-alert">
+            <p>✓ <strong>{title}</strong> ({qty}) a bien été ajouté à votre panier !</p>
+            <div className="product-alert-actions">
+              <Link to="/panier" className="btn">
+                Voir mon panier
+              </Link>
+              <Link to="/catalogue" className="btn ghost">
+                Continuer mes achats
+              </Link>
+            </div>
+          </div>
+        ) : null}
       </div>
     </main>
   )
