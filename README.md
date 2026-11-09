@@ -4,42 +4,35 @@ Application web e-commerce moderne conçue en **React (Vite)**, connectée à un
 
 ---
 
-## 🧭 Le Parcours Utilisateur
+##  Le Parcours Utilisateur
 
-### 1. 🏠 Accueil & Découverte (`/`)
+### 1.  Accueil & Découverte (`/`)
 * **Présentation** : Découverte de la boutique et de son univers.
 * **Indicateur de statut** : Affiche en temps réel si l'application est connectée à Strapi ou en mode démo.
 * **Sélection** : Mise en avant immédiate des 3 premiers articles phares.
 
-### 2. 🛍️ Catalogue & Filtres (`/catalogue`)
+### 2.  Catalogue & Filtres (`/catalogue`)
 * **Navigation par catégories** : Filtrage rapide par tags (Tech, Mode, etc.).
 * **Grille de produits** : Affichage responsive avec photo, titre, catégorie et prix.
 * **Compteur** : Indique en direct le nombre d'articles affichés.
 
-### 3. 🔍 Fiche Produit (`/produit/:slug`)
+### 3.  Fiche Produit (`/produit/:slug`)
 * **Détails complets** : Visuel grand format, description détaillée et prix unitaire.
 * **Personnalisation** : Choix de la quantité souhaitée.
 * **Ajout au panier** : Bouton d'action avec notification instantanée de confirmation.
 
-### 4. 🛒 Panier & Commande (`/panier`)
+### 4.  Panier & Commande (`/panier`)
 * **Gestion en direct** : Ajustement des quantités, suppression ligne par ligne ou vidage complet.
 * **Récapitulatif** : Calcul automatique du sous-total et du montant total.
 * **Validation** : Simulation d'achat sécurisée avec confirmation de commande.
 
-### 5. 👤 Connexion & Compte (`/connexion`)
+### 5.  Connexion & Compte (`/connexion`)
 * **Double mode** : Bascule facile entre connexion et inscription.
 * **Persistance** : Authentification via JWT Strapi (ou stockage local sécurisé en mode démo).
 
 ---
 
-## ⚙️ Architecture & Résilience
-
-* **Double source de données** : Si le serveur Strapi n'est pas démarré, l'application bascule automatiquement sur les données de secours locales (`fallback.js`). Aucune interruption de l'expérience client.
-* **Gestion d'état globale** : Contexte React dédié pour le panier (`CartContext`) et l'authentification (`AuthContext`).
-
----
-
-## 🚀 Démarrage Rapide
+##  Démarrage Rapide
 
 ### Prérequis
 * Node.js (version 18 ou supérieure recommandée)
