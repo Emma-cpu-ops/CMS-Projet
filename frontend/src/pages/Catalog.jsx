@@ -9,11 +9,49 @@ export default function Catalog() {
   const selected = params.get('cat') || ''
   const [categories, setCategories] = useState([])
   const [articles, setArticles] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [articlesError, setArticlesError] = useState(false)
+  const [categoriesError, setCategoriesError] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
-    fetchCategories().then(setCategories)
-    fetchArticles().then(setArticles)
-  }, [])
+    let ignore = false
+
+    async function load() {
+      setLoading(true)
+      setArticlesError(false)
+      setCategoriesError(false)
+
+      const [categoriesResult, articlesResult] = await Promise.allSettled([
+        fetchCategories(),
+        fetchArticles(),
+      ])
+
+      if (ignore) return
+
+      if (categoriesResult.status === 'fulfilled') {
+        setCategories(categoriesResult.value)
+      } else {
+        console.error('Impossible de charger les catégories.', categoriesResult.reason)
+        setCategoriesError(true)
+      }
+
+      if (articlesResult.status === 'fulfilled') {
+        setArticles(articlesResult.value)
+      } else {
+        console.error('Impossible de charger les produits.', articlesResult.reason)
+        setArticlesError(true)
+      }
+
+      setLoading(false)
+    }
+
+    load()
+
+    return () => {
+      ignore = true
+    }
+  }, [reloadKey])
 
   const visible = useMemo(() => {
     if (!selected) return articles
@@ -26,6 +64,9 @@ export default function Catalog() {
         <h1>Catalogue</h1>
         <p>{visible.length} article{visible.length > 1 ? 's' : ''}</p>
       </div>
+      {categoriesError ? (
+        <p className="notice" role="status">Impossible de charger les catégories.</p>
+      ) : null}
       <div className="chips">
         <button
           type="button"
@@ -46,9 +87,27 @@ export default function Catalog() {
         ))}
       </div>
       <div className="grid">
-        {visible.map((article) => (
-          <ProductCard key={article.documentId || article.id} article={article} />
-        ))}
+        {loading ? <p role="status">Chargement des produits…</p> : null}
+        {!loading && articlesError ? (
+          <div className="empty-state" role="alert">
+            <p>Impossible de charger les produits. Vérifiez la connexion à l’API puis réessayez.</p>
+            <button type="button" className="btn ghost" onClick={() => setReloadKey((key) => key + 1)}>
+              Réessayer
+            </button>
+          </div>
+        ) : null}
+        {!loading && !articlesError && visible.length === 0 ? (
+          <p className="empty-state" role="status">
+            {articles.length === 0
+              ? 'Aucun produit disponible pour le moment.'
+              : 'Aucun produit dans cette catégorie.'}
+          </p>
+        ) : null}
+        {!loading && !articlesError
+          ? visible.map((article) => (
+              <ProductCard key={article.documentId || article.id} article={article} />
+            ))
+          : null}
       </div>
     </main>
   )

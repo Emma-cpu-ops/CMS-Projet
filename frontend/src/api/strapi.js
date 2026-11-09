@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { fallbackArticles, fallbackCategories, fallbackGlobal } from '../data/fallback'
 
 const rawUrl = (import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337').trim()
 export const strapiServerUrl = rawUrl.replace(/\/api\/?$/, '').replace(/\/$/, '')
@@ -71,35 +70,18 @@ function unwrapOne(payload) {
 }
 
 export async function fetchGlobal() {
-  if (!hasRemoteApi) return fallbackGlobal
-  try {
-    const { data } = await client.get('/global', { params: { populate: '*' } })
-    return unwrapOne(data) ?? fallbackGlobal
-  } catch {
-    return fallbackGlobal
-  }
+  const { data } = await client.get('/global', { params: { populate: '*' } })
+  return unwrapOne(data)
 }
 
 export async function fetchCategories() {
-  if (!hasRemoteApi) return fallbackCategories
-  try {
-    const { data } = await client.get('/categories', { params: { populate: '*' } })
-    const list = unwrapList(data)
-    return list.length ? list : fallbackCategories
-  } catch {
-    return fallbackCategories
-  }
+  const { data } = await client.get('/categories', { params: { populate: '*' } })
+  return unwrapList(data)
 }
 
 export async function fetchArticles() {
-  if (!hasRemoteApi) return fallbackArticles
-  try {
-    const { data } = await client.get('/articles', { params: { populate: '*' } })
-    const list = unwrapList(data)
-    return list.length ? list : fallbackArticles
-  } catch {
-    return fallbackArticles
-  }
+  const { data } = await client.get('/articles', { params: { populate: '*' } })
+  return unwrapList(data)
 }
 
 export async function fetchArticleBySlug(slug) {

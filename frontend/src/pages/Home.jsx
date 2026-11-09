@@ -8,22 +8,53 @@ export default function Home() {
   const [categories, setCategories] = useState([])
   const [articles, setArticles] = useState([])
   const [remoteConnected, setRemoteConnected] = useState(false)
+  const [articlesLoading, setArticlesLoading] = useState(true)
+  const [articlesError, setArticlesError] = useState(false)
+  const [categoriesError, setCategoriesError] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     let ignore = false
 
     async function load() {
-      const connected = await checkApiConnection()
-      if (!ignore) setRemoteConnected(connected)
+      setArticlesLoading(true)
+      setArticlesError(false)
+      setCategoriesError(false)
 
-      const nextGlobal = await fetchGlobal()
-      const nextCategories = await fetchCategories()
-      const nextArticles = await fetchArticles()
+      const [connectionResult, globalResult, categoriesResult, articlesResult] =
+        await Promise.allSettled([
+          checkApiConnection(),
+          fetchGlobal(),
+          fetchCategories(),
+          fetchArticles(),
+        ])
 
       if (!ignore) {
-        setGlobal(nextGlobal)
-        setCategories(nextCategories)
-        setArticles(nextArticles)
+        if (connectionResult.status === 'fulfilled') {
+          setRemoteConnected(connectionResult.value)
+        }
+
+        if (globalResult.status === 'fulfilled') {
+          setGlobal(globalResult.value)
+        } else {
+          console.error('Impossible de charger les informations du site.', globalResult.reason)
+        }
+
+        if (categoriesResult.status === 'fulfilled') {
+          setCategories(categoriesResult.value)
+        } else {
+          console.error('Impossible de charger les catégories.', categoriesResult.reason)
+          setCategoriesError(true)
+        }
+
+        if (articlesResult.status === 'fulfilled') {
+          setArticles(articlesResult.value)
+        } else {
+          console.error('Impossible de charger les produits.', articlesResult.reason)
+          setArticlesError(true)
+        }
+
+        setArticlesLoading(false)
       }
     }
 
@@ -32,7 +63,7 @@ export default function Home() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [reloadKey])
 
   const highlighted = articles.slice(0, 3)
 
@@ -60,6 +91,9 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        {categoriesError ? (
+          <p className="notice" role="status">Impossible de charger les catégories.</p>
+        ) : null}
       </section>
 
       <section className="section">
@@ -68,9 +102,23 @@ export default function Home() {
           <Link to="/catalogue">Tout voir</Link>
         </div>
         <div className="grid">
-          {highlighted.map((article) => (
-            <ProductCard key={article.documentId || article.id} article={article} />
-          ))}
+          {articlesLoading ? <p role="status">Chargement des produits…</p> : null}
+          {!articlesLoading && articlesError ? (
+            <div className="empty-state" role="alert">
+              <p>Impossible de charger les produits. Vérifiez la connexion à l’API puis réessayez.</p>
+              <button type="button" className="btn ghost" onClick={() => setReloadKey((key) => key + 1)}>
+                Réessayer
+              </button>
+            </div>
+          ) : null}
+          {!articlesLoading && !articlesError && highlighted.length === 0 ? (
+            <p className="empty-state" role="status">Aucun produit disponible pour le moment.</p>
+          ) : null}
+          {!articlesLoading && !articlesError
+            ? highlighted.map((article) => (
+                <ProductCard key={article.documentId || article.id} article={article} />
+              ))
+            : null}
         </div>
       </section>
     </main>

@@ -8,17 +8,46 @@ export default function Product() {
   const { slug } = useParams()
   const { addItem } = useCart()
   const [article, setArticle] = useState(undefined)
+  const [loadError, setLoadError] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
   const [qty, setQty] = useState(1)
   const [addedNotice, setAddedNotice] = useState(false)
 
   useEffect(() => {
-    fetchArticleBySlug(slug).then(setArticle)
-  }, [slug])
+    let ignore = false
+
+    async function load() {
+      setArticle(undefined)
+      setLoadError(false)
+      try {
+        const result = await fetchArticleBySlug(slug)
+        if (!ignore) setArticle(result)
+      } catch (error) {
+        console.error('Impossible de charger le produit.', error)
+        if (!ignore) setLoadError(true)
+      }
+    }
+
+    load()
+
+    return () => {
+      ignore = true
+    }
+  }, [slug, reloadKey])
 
   if (article === undefined) {
     return (
       <main className="section">
-        <p>Chargement…</p>
+        {loadError ? (
+          <div className="empty-state" role="alert">
+            <p>Impossible de charger ce produit. Vérifiez la connexion à l’API puis réessayez.</p>
+            <button type="button" className="btn ghost" onClick={() => setReloadKey((key) => key + 1)}>
+              Réessayer
+            </button>
+          </div>
+        ) : (
+          <p role="status">Chargement…</p>
+        )}
       </main>
     )
   }
